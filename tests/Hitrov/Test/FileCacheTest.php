@@ -21,6 +21,15 @@ class FileCacheTest extends TestCase
         }
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        
+        if (file_exists($this->getCacheFilename())) {
+            unlink($this->getCacheFilename());
+        }
+    }
+
     public function testGetCacheKey(): void
     {
         $config = $this->getDefaultConfig();
@@ -40,11 +49,11 @@ class FileCacheTest extends TestCase
         $api->setCache(new FileCache($config));
 
         $this->assertTrue(
-            file_exists(sprintf('%s/%s', getcwd(), 'oci_cache.json')),
+            file_exists($this->getCacheFilename()),
         );
     }
 
-    public function testAddsCacheFileContents()
+    public function testAddsCacheFileContents(): void
     {
         $config = $this->getDefaultConfig();
         $cache = new FileCache($config);
@@ -68,7 +77,7 @@ EOD;
         );
     }
 
-    public function testUpdatesCacheFileContents()
+    public function testUpdatesCacheFileContents(): void
     {
         $config = $this->getDefaultConfig();
         $cache = new FileCache($config);
@@ -111,7 +120,7 @@ EOD;
         );
     }
 
-    public function testUpdatesWithDifferentConfig()
+    public function testUpdatesWithDifferentConfig(): void
     {
         $config = $this->getDefaultConfig();
         $config->bootVolumeId = 'baz';
@@ -153,7 +162,7 @@ EOD;
         );
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $config = $this->getDefaultConfig();
         $cache = new FileCache($config);
@@ -168,6 +177,6 @@ EOD;
 
     private function getCacheFilename(): string
     {
-        return sprintf('%s/%s', getcwd(), 'oci_cache.json');
+        return getcwd() . '/oci_cache.json';
     }
 }
